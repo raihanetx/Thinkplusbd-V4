@@ -1186,27 +1186,8 @@ src="https://www.facebook.com/tr?id=482675157669768&ev=PageView&noscript=1"
             <div class="container">
                  <h2 class="category-section-title">Product Categories</h2>
             </div>
-            <section class="categories container">
-                <div class="category" onclick="navigateTo('products', 'course')">
-                    <div class="category-icon-wrapper"><i class="fas fa-graduation-cap category-icon-fa" aria-hidden="true"></i></div>
-                    <p class="category-name">Course</p>
-                    <p class="category-subtitle" id="category-count-course">0 Premium Courses</p>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'subscription')">
-                    <div class="category-icon-wrapper"><i class="fas fa-key category-icon-fa" aria-hidden="true"></i></div>
-                    <p class="category-name">Subscription</p>
-                    <p class="category-subtitle" id="category-count-subscription">0 Premium Services</p>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'software')">
-                    <div class="category-icon-wrapper"><i class="fas fa-laptop-code category-icon-fa" aria-hidden="true"></i></div>
-                    <p class="category-name">Software</p>
-                    <p class="category-subtitle" id="category-count-software">0 Bundle Packages</p>
-                </div>
-                <div class="category" onclick="navigateTo('products', 'ebook')">
-                    <div class="category-icon-wrapper"><i class="fas fa-book-open category-icon-fa" aria-hidden="true"></i></div>
-                    <p class="category-name">Ebook</p>
-                    <p class="category-subtitle" id="category-count-ebook">0 Digital Guides</p>
-                </div>
+            <section class="categories container" id="categories-container">
+                <!-- Categories will be dynamically inserted here -->
             </section>
 
             <section class="product-listings container">
@@ -2748,15 +2729,37 @@ Microsoft-এর অফিসিয়াল Activation Key, ইমেইলে ড
             bottomNavItems.forEach(item => { item.classList.remove('active'); if (item.dataset.page === activePage || (activePage === 'productDetail' && item.dataset.page === 'products') || (activePage === 'cart' && item.dataset.page === 'products') ) { item.classList.add('active'); } });
         }
 
+        async function loadCategories() {
+            try {
+                const response = await fetch('categories.json');
+                const categories = await response.json();
+                const container = document.getElementById('categories-container');
+                container.innerHTML = '';
+                categories.forEach(category => {
+                    const categoryHTML = `
+                        <div class="category" onclick="navigateTo('products', '${category.name.toLowerCase()}')">
+                            <div class="category-icon-wrapper"><i class="${category.icon} category-icon-fa" aria-hidden="true"></i></div>
+                            <p class="category-name">${category.name}</p>
+                            <p class="category-subtitle" id="category-count-${category.name.toLowerCase()}">0 ${category.subtitle}</p>
+                        </div>
+                    `;
+                    container.innerHTML += categoryHTML;
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM fully loaded and parsed');
-            setupEventListeners(); 
-            loadCartFromLocalStorage(); 
-            loadOrdersFromLocalStorage(); 
+            setupEventListeners();
+            loadCartFromLocalStorage();
+            loadOrdersFromLocalStorage();
+            await loadCategories();
             await fetchProducts(true);
-            handleHashChange(true); 
+            handleHashChange(true);
             updateOrdersNotification();
-            window.addEventListener('hashchange', () => handleHashChange(false)); 
+            window.addEventListener('hashchange', () => handleHashChange(false));
         });
         // --- END OF FILE script.js ---
     </script>
