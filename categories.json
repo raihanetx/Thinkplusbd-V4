@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Category 1",
+        "icon": "fas fa-book",
+        "subtitle": "Subtitle 1"
+    },
+    {
+        "name": "Category 2",
+        "icon": "fas fa-laptop",
+        "subtitle": "Subtitle 2"
+    }
+]
